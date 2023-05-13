@@ -9,6 +9,7 @@ def Fn_A(i):
 
 def Fn_B(i):
     s=(Type_B[i[0]])
+    s+='0'
     s+=register[i[1]]
     p=i[2]
     p=p[1:]
