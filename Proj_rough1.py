@@ -90,13 +90,13 @@ for i in assemb_prg:
     if ':' in i[0]:
         label[i[0]]=format(assemb_prg.index(i),'07b')
         i.remove(i[0])
-print(label)
+
 new_label = {}
 for k, v in label.items():
     new_label[k.rstrip(':')] = v
-print(new_label)
 
-print(variable,"\n",assemb_prg)
+
+#print(variable,"\n",assemb_prg)
 
 Type_A={"add":"00000","sub":"00001","mul":"00110","xor":"01010","or":"01011","and":"01100"}
 Type_B={"mov":"00010","rs":"01000","ls":"01001"}
