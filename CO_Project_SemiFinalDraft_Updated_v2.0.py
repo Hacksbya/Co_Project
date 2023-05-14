@@ -165,12 +165,13 @@ def detect_typo(assemb_prg):
             isError = True
         
         for r in i[1:]:  
-                if 'R' in r:
-                    if 'var' not in r:
-                        if 'label' not in r:
+                if 'var' not in r:
+                    if 'label' not in r:
                             if '$' not in r:
-                                if r not in reg_name:
-                                    isError = True
+                                if "R" in r:
+                                    if r not in reg_name:
+                                        isError = True   
+               
     return isError 
 
 if detect_typo(assemb_prg) == True:
