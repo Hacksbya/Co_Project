@@ -51,7 +51,7 @@ def Fn_F(i):
 
 
 #main program
-f=open("E:\Projects\CO_CourseProject\co.txt.txt")
+f=open("co.txt")
 assemb_prg=[]
 for i in f.readlines():
     words=i.strip().split()
@@ -78,6 +78,15 @@ for inst in assemb_prg:
             variable["var"].append(inst[1])
         else:
             variable["var"]=[inst[1]]
+
+#checking for error of type G
+
+if len(variable) == 0:
+    error_g=1
+    error_count+=1
+    print("Variables not declared at the beginning")
+    exit()
+
 #var is a 2-D list having variables inside the second list
 for j in variable.values():
     var.append(j)
@@ -126,7 +135,6 @@ for k, v in label.items():
 for i in assemb_prg:
     if i==[]:
         assemb_prg.remove(i)
-#print(variable,"\n",assemb_prg)
 
 Type_A={"add":"00000","sub":"00001","mul":"00110","xor":"01010","or":"01011","and":"01100"}
 Type_B={"mov":"00010","rs":"01000","ls":"01001"}
@@ -137,7 +145,7 @@ Type_F={"hlt":"11010"}
 
 register={"R0":"000","R1":"001","R2":"010","R3":"011","R4":"100","R5":"101","R6":"110","FLAGS":"111"}
 
-print(assemb_prg)
+
 
 #checking for the error of type E
 for i in assemb_prg:
@@ -147,10 +155,99 @@ for i in assemb_prg:
             error_e=1
             error_count+=1
 
+#checking for error of type A
+def detect_typo(assemb_prg):          
+    inst_name = ["add" , "sub" , "mul" , "xor" , "or" , "and" , "mov" , "div" , "not" , "cmp" , "ld" , "st" , "jmp" , "jlt" , "jgt" , "je" , "hlt"]
+    reg_name = ["R0" , "R1" ,"R2" , "R3" , "R4" , "R5" , "R6" , "FLAGS"]
+    isError = False
+    for i in assemb_prg:           #i -> instruction
+        if i[0] not in inst_name:
+            isError = True
+        
+        for r in i[1:]:  
+                if 'R' in r:
+                    if 'var' not in r:
+                        if 'label' not in r:
+                            if '$' not in r:
+                                if r not in reg_name:
+                                    isError = True
+    return isError 
+
+if detect_typo(assemb_prg) == True:
+    error_a = 1
+    error_count += 1
+
+#checking for error of type B
+def detect_undefined_var(assemb_prg):
+    var_set = set()
+    isError = False
+    for i in assemb_prg:
+        var_set.update(i[1:])
+    for j in var_set:
+        if j not in register and j not in var_set:
+            isError = True                       #print the error message           
+    return isError  
+
+if detect_undefined_var(assemb_prg) == True:
+    error_b = 1
+    error_count += 1
+
+#checking for error of type C
+def detect_undefined_label(assemb_prg):             
+    labels = set(new_label.keys())
+    isError = False
+    for i in assemb_prg:
+        if i[0] in ["jmp", "jlt", "jgt", "je"]:
+            if i[1] not in labels:
+                isError = True
+            elif 'label' in label:
+                isError = True
+    return isError
+                
+if detect_undefined_label(assemb_prg) == True:
+    error_c = 1
+    error_count += 1 
+
+
+#checking for error of type D``
+def detect_illegal_flags(assemb_prg):          
+    isIllegal = False
+
+    for i in assemb_prg:
+        if i[0] in ["add", "sub", "mul", "xor", "or", "and", "div", "not", "cmp"]:
+            for j in i[1:]:
+                if j == "FLAGS":
+                    isIllegal = True
+    
+    return isIllegal
+
+if detect_illegal_flags(assemb_prg) == True:
+    error_d = 1
+    error_count += 1
+
+#checking of error of type_F
+
+def Error_f(assemb_prg):
+    isError=False
+    for i in assemb_prg:
+        if i[0] in ["jmp", "jlt", "jgt", "je"]:
+            if 'label' not in i[1]:
+                isError=True
+
+        if i[0] in ["add" , "sub" , "mul" , "xor" , "or" , "and" , "mov" , "div" , "not" , "cmp" , "ld" , "st" ]:
+            if 'label' in i[1:0]:
+                isError=True
+    
+    return isError
+
+
+if Error_f(assemb_prg) == True:
+    error_f=1
+    error_count+=1
 
 
 #handeling errors because of different flags that could be raised because of possible errors
-if(error_count==1):
+if(error_count>1):
     if(error_a==1):
         print("Typo in instruction name or register name")
     if(error_b==1):
@@ -163,8 +260,6 @@ if(error_count==1):
         print("Illegal Immediate values (more than 7 bits)")
     if(error_f==1):
         print("Misuse of labels as variables or vice-versa")
-    if(error_g==1):
-        print("Variables not declared at the beginning")
     if(error_h==1):
         print("Missing hlt instruction")
     if(error_i==1):
@@ -174,26 +269,19 @@ elif(error_count>1):
     print("General Syntax Error")
     exit()
 
-print(assemb_prg)
 
 #printing the machine code by calling different functions
 for i in assemb_prg:
-    if i[0] == 'mov':
-        if '$' in i[2]:
-            Fn_B(i)
-        else:
-            Fn_C(i)
-    else:        
-        if i[0] in Type_A.keys():
-            Fn_A(i)
-        elif i[0] in Type_B.keys():
-            Fn_B(i)
-        elif i[0] in Type_C.keys():
-            Fn_C(i)
-        elif i[0] in Type_D.keys():
-            Fn_D(i)
-        elif i[0] in Type_E.keys():
-            Fn_E(i)
-        elif i[0] in Type_F.keys():
-            Fn_F(i)
+    if i[0] in Type_A.keys():
+        Fn_A(i)
+    elif i[0] in Type_B:
+        Fn_B(i)
+    elif i[0] in Type_C:
+        Fn_C(i)
+    elif i[0] in Type_D:
+        Fn_D(i)
+    elif i[0] in Type_E:
+        Fn_E(i)
+    elif i[0] in Type_F:
+        Fn_F(i)
 
