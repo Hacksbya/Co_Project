@@ -178,16 +178,22 @@ print(assemb_prg)
 
 #printing the machine code by calling different functions
 for i in assemb_prg:
-    if i[0] in Type_A.keys():
-        Fn_A(i)
-    elif i[0] in Type_B:
-        Fn_B(i)
-    elif i[0] in Type_C:
-        Fn_C(i)
-    elif i[0] in Type_D:
-        Fn_D(i)
-    elif i[0] in Type_E:
-        Fn_E(i)
-    elif i[0] in Type_F:
-        Fn_F(i)
+    if i[0] == 'mov':
+        if '$' in i[2]:
+            Fn_B(i)
+        else:
+            Fn_C(i)
+    else:        
+        if i[0] in Type_A.keys():
+            Fn_A(i)
+        elif i[0] in Type_B.keys():
+            Fn_B(i)
+        elif i[0] in Type_C.keys():
+            Fn_C(i)
+        elif i[0] in Type_D.keys():
+            Fn_D(i)
+        elif i[0] in Type_E.keys():
+            Fn_E(i)
+        elif i[0] in Type_F.keys():
+            Fn_F(i)
 
