@@ -79,37 +79,42 @@ for inst in assemb_prg:
         else:
             variable["var"]=[inst[1]]
 
-#checking for error of type G
-
-if len(variable) == 0:
-    error_g=1
-    error_count+=1
-    print("Variables not declared at the beginning")
-    exit()
 
 #var is a 2-D list having variables inside the second list
 for j in variable.values():
     var.append(j)
 
-variable_dict = {var: i for i, var in enumerate(variable['var'])}
-variable['var'] = variable_dict
+#checking for error of type G
+if len(var)!=0:
+    variable_dict = {var: i for i, var in enumerate(variable['var'])}
+    variable['var'] = variable_dict
 
-#coverting all the variables in the list to None
-for i,j in variable.items():
-    for var in range(len(j)):
-        assemb_prg[var]=None
 
-#removing all the none in the program
-i=0
-while(i<len(assemb_prg)):
-    if None in assemb_prg:
-        assemb_prg.remove(None)
-    i+=1
+    #coverting all the variables in the list to None
+    for i,j in variable.items():
+        for var in range(len(j)):
+            assemb_prg[var]=None
 
-#assigning the addrersses to the variables
-for k in variable.values():
-    for i,j in k.items():
-        k[i]=format(len(assemb_prg)+j,'07b')
+    #removing all the none in the program
+    i=0
+    while(i<len(assemb_prg)):
+        if None in assemb_prg:
+            assemb_prg.remove(None)
+        i+=1
+
+    #assigning the addrersses to the variables
+    for k in variable.values():
+        for i,j in k.items():
+            k[i]=format(len(assemb_prg)+j,'07b')
+else:
+    for i in assemb_prg:
+        if len(i)==3:
+            if 'var' in i[2]:
+                error_g=1
+            else:
+                break
+    error_count+=1
+
 
 label={}
 c=0
@@ -248,7 +253,7 @@ if Error_f(assemb_prg) == True:
 
 
 #handeling errors because of different flags that could be raised because of possible errors
-if(error_count>1):
+if(error_count==1):
     if(error_a==1):
         print("Typo in instruction name or register name")
     if(error_b==1):
@@ -261,6 +266,8 @@ if(error_count>1):
         print("Illegal Immediate values (more than 7 bits)")
     if(error_f==1):
         print("Misuse of labels as variables or vice-versa")
+    if(error_g==1):
+        print("Variables not declared at the beginning")
     if(error_h==1):
         print("Missing hlt instruction")
     if(error_i==1):
