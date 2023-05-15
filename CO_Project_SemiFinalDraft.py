@@ -116,7 +116,6 @@ while(i<len(assemb_prg)):
 for i in assemb_prg:
     if i[0]=='var':
         error_g=1
-        print("Variables not declared at the beginning")
 
 #assigning the addrersses to the variables
 for k in variable.values():
@@ -167,7 +166,7 @@ for i in assemb_prg:
     if i[0] in Type_B:
         temp_e=i[2][1:]
         if temp_e.isdigit()==False:
-            print(f"No variable named {i[2]}")
+            pass
         elif int(temp_e)>=128:
             error_e=1
             error_count+=1
