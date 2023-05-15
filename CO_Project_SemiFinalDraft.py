@@ -244,15 +244,16 @@ if detect_illegal_flags(assemb_prg) == True:
 
 #checking of error of type_F
 
+print(label)
 def Error_f(assemb_prg):
     isError=False
     for i in assemb_prg:
         if i[0] in ["jmp", "jlt", "jgt", "je"]:
-            if 'label' not in i[1]:
+            if i[1] not in new_label.keys():
                 isError=True
 
         if i[0] in ["add" , "sub" , "mul" , "xor" , "or" , "and" , "mov" , "div" , "not" , "cmp" , "ld" , "st" ]:
-            if 'label' in i[1:0]:
+            if i[2] in new_label:
                 isError=True
     
     return isError
@@ -289,16 +290,22 @@ if(error_count>=1):
 
 #printing the machine code by calling different functions
 for i in assemb_prg:
-    if i[0] in Type_A.keys():
-        Fn_A(i)
-    elif i[0] in Type_B:
-        Fn_B(i)
-    elif i[0] in Type_C:
-        Fn_C(i)
-    elif i[0] in Type_D:
-        Fn_D(i)
-    elif i[0] in Type_E:
-        Fn_E(i)
-    elif i[0] in Type_F:
-        Fn_F(i)
+    if i[0] == 'mov':
+        if '$' in i[2]:
+            Fn_B(i)
+        else:
+            Fn_C(i)
+    else:
+        if i[0] in Type_A.keys():
+            Fn_A(i)
+        elif i[0] in Type_B:
+            Fn_B(i)
+        elif i[0] in Type_C:
+            Fn_C(i)
+        elif i[0] in Type_D:
+            Fn_D(i)
+        elif i[0] in Type_E:
+            Fn_E(i)
+        elif i[0] in Type_F:
+            Fn_F(i)
 
