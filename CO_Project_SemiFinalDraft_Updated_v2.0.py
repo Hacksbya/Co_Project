@@ -190,7 +190,7 @@ def detect_undefined_var(assemb_prg):
     for i in assemb_prg:
         var_set.update(i[1:])
     for j in var_set:
-        if j not in register and j not in var_set:
+        if j not in register and j not in variable['var']:
             isError = True                       #print the error message           
     return isError  
 
