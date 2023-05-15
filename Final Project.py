@@ -254,18 +254,26 @@ def Error_f(assemb_prg):
     isError=False
     for i in assemb_prg:
         if i[0] in ["jmp", "jlt", "jgt", "je"]:
-            if i[1] not in new_label.keys():
-                isError=True
-
-        if i[0] in ["add" , "sub" , "mul" , "xor" , "or" , "and" , "mov" , "div" , "not" , "cmp" , "ld" , "st" ]:
-            if i[2] in new_label:
-                isError=True
+            if len(i)<2:
+                isError=-1
+            elif len(i)>2:
+                isError=1
+        if i[0] in  ["mov" , "div" , "not" , "cmp" , "ld" , "st" ]:
+            if len(i)<3:
+                isError = -1
+            elif len(i)>3:
+                isError=1
+        if i[0] in ["add" , "sub" , "mul" , "xor" , "or" , "and"]:
+            if len(i)<4:
+                isError=-1
+            elif len(i)>4:
+                isError=1
     
     return isError
 
 
-if Error_f(assemb_prg) == True:
-    error_f=1
+error_f=Error_f(assemb_prg)
+if error_f!=0:
     error_count+=1
 
 f1=open('Binary File.txt','w')
@@ -279,8 +287,10 @@ if(error_count>=1):
         f1.write("Illegal use of FLAGS register\n")
     if(error_e==1):
         f1.write("Illegal Immediate values (more than 7 bits)\n")
+    if(error_f==-1):
+        f1.write("Incomplete Parameters\n")
     if(error_f==1):
-        f1.write("Misuse of labels as variables or vice-versa\n")
+        f1.write("Extra Parameters\n")
     if(error_h==1):
         f1.write("Missing hlt instruction\n")
     if(error_i==1):
