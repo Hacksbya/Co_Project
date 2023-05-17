@@ -1,3 +1,4 @@
+import sys
 #initialising the flags for different error cases
 error_a,error_b,error_c,error_d,error_e,error_f,error_g,error_h,error_i=0,0,0,0,0,0,0,0,0
 error_count=0
@@ -10,7 +11,7 @@ def Fn_A(i):
     s+=register[i[2]]
     s+=register[i[3]]
     s+='\n'
-    f1.write(s)
+    sys.stdout.write(s)
 
 
 def Fn_B(i):
@@ -21,7 +22,7 @@ def Fn_B(i):
     p=p[1:]
     s+=format(int(p),'07b')
     s+='\n'
-    f1.write(s)
+    sys.stdout.write(s)
 
 def Fn_C(i):
     s=(Type_C[i[0]])
@@ -29,7 +30,7 @@ def Fn_C(i):
     s+=register[i[1]]
     s+=register[i[2]]
     s+='\n'
-    f1.write(s)
+    sys.stdout.write(s)
 
 
 def Fn_D(i):
@@ -38,7 +39,7 @@ def Fn_D(i):
     s+=register[i[1]]
     s+=variable['var'][i[2]]
     s+='\n'
-    f1.write(s)
+    sys.stdout.write(s)
 
 
 def Fn_E(i):
@@ -46,27 +47,27 @@ def Fn_E(i):
     s+='0000'
     s+=new_label[i[1]]
     s+='\n'
-    f1.write(s)
+    sys.stdout.write(s)
 
 
 def Fn_F(i):
     s=(Type_F[i[0]])
     s+='00000000000'
     s+='\n'
-    f1.write(s)
+    sys.stdout.write(s)
 
 
 #main program
-f=open("stdin.txt")
+# f=open("stdin.txt")
 assemb_prg=[]
-for i in f.readlines():
-    words=i.strip().split()
-    assemb_prg.append(words)
+# for i in f.readlines():
+#     words=i.strip().split()
+#     assemb_prg.append(words)
+for kx in sys.stdin:
+    words=kx.strip().split()
+    assemb_prg.append(words)   
 
-#checking for the error of type_i
-if assemb_prg[-1][-1]!="hlt":
-    error_i=1
-    error_count+=1
+
 
 #removing the empty elements of the program given
 for i in assemb_prg:
@@ -75,6 +76,8 @@ for i in assemb_prg:
 
 variable={}
 var=[]
+
+
 
 
 #assemb_prg is a 2-D list containing all the words of the progaram seperated as seperate words
@@ -155,6 +158,11 @@ for k, v in label.items():
 for i in assemb_prg:
     if i==[]:
         assemb_prg.remove(i)
+        
+#checking for the error of type_i
+if assemb_prg[-1][-1]!="hlt":
+    error_i=1
+    error_count+=1
 
 Type_A={"add":"00000","sub":"00001","mul":"00110","xor":"01010","or":"01011","and":"01100"}
 Type_B={"mov":"00010","rs":"01000","ls":"01001"}
@@ -276,27 +284,27 @@ error_f=Error_f(assemb_prg)
 if error_f!=0:
     error_count+=1
 
-f1=open('stdout.txt','w')
+# f1=open('stdout.txt','w')
 #handeling errors because of different flags that could be raised because of possible errors
 if(error_count>=1):
     if(error_b==1):
-        f1.write("Use of undefined variables\n")
+        sys.stdout.write("Use of undefined variables\n")
     if(error_c==1):
-        f1.write("Use of undefined labels\n")
+        sys.stdout.write("Use of undefined labels\n")
     if(error_d==1):
-        f1.write("Illegal use of FLAGS register\n")
+        sys.stdout.write("Illegal use of FLAGS register\n")
     if(error_e==1):
-        f1.write("Illegal Immediate values (more than 7 bits)\n")
+        sys.stdout.write("Illegal Immediate values (more than 7 bits)\n")
     if(error_f==-1):
-        f1.write("Incomplete Parameters\n")
+        sys.stdout.write("Incomplete Parameters\n")
     if(error_f==1):
-        f1.write("Extra Parameters\n")
+        sys.stdout.write("Extra Parameters\n")
     if(error_h==1):
-        f1.write("Missing hlt instruction\n")
+        sys.stdout.write("Missing hlt instruction\n")
     if(error_i==1):
-        f1.write("hlt not being used as the last instruction\n")
+        sys.stdout.write("hlt not being used as the last instruction\n")
     elif (error_a==1):
-        f1.write("Typo in instruction name or register name\n")
+        sys.stdout.write("Typo in instruction name or register name\n")
     exit()        
 # elif(error_count>1):
 #     print("General Syntax Error")
@@ -324,4 +332,3 @@ for i in assemb_prg:
             Fn_E(i)
         elif i[0] in Type_F:
             Fn_F(i)
-
