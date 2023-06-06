@@ -1,0 +1,31 @@
+[General Points]:
+->jo halt na aane wala case hoga usme toh basically voh assembler hi nahi aage badne dega toh execute nahi hoga usme toh kuch 
+-> basically hame chalte hue code ko simulate krdena hai 
+-> Binary file ka format same hoga jaisa Q1 me hai
+
+
+[Input and Output]:
+-> Input and Output have to be taken as stdin and stdout 
+-> Output me program execution kahtam hone ke baad print the whole memory dump of the whole memory (128 lines with 16 bit values)
+
+
+[Main]:
+-> Har instruction execute hone ke baad hame iss format me data print krna hai
+<PC (7 bits)><space><R0 (16 bits)><space>...<R6 (16 bits)><space><FLAGS (16 bits)>.
+
+
+[Note]:
+-> Code start krte time hame binary file ko system memory me load krdena hai 
+-> load krne ke baad usse address 0 se execute krna start krde
+-> jabhtak hlt nahi aajata
+
+-> Simlator me ye 4 cheeze hone compulsory hai.
+
+1. Memory(MEM): 7-bit address lekar 16 bit value return krni hai | 256 bytes stored | initialise: 0
+	 
+2. Program Counter(PC): 7-bit register | +1 krna hai isse har instruction follow krne ke baad | initialise= 0
+
+3. Register file(RF): Register ka naam lekar (R0, R1,R2... FLAGS) unki values store krega
+
+4. Execution Engine(EE): Instruction ka address lega PC se | MEM me se stored  instruction lega | Instruction execute krne ke baad RF and PC ko upadte krega
+
